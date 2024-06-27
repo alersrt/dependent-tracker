@@ -21,7 +21,7 @@ import org.student.plugins.dependent.mapper.DependencyMapperImpl;
 
 import java.io.IOException;
 
-@Mojo(name = "dependent-tracker", defaultPhase = LifecyclePhase.COMPILE)
+@Mojo(name = "dependent-tracker")
 public class DependentTrackerMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
