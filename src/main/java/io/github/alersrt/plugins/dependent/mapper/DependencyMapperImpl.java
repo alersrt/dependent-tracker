@@ -1,8 +1,8 @@
-package org.student.plugins.dependent.mapper;
+package io.github.alersrt.plugins.dependent.mapper;
 
 import org.apache.maven.model.Model;
-import org.student.plugins.dependent.domain.Dependency;
-import org.student.plugins.dependent.domain.Dependent;
+import io.github.alersrt.plugins.dependent.domain.Dependency;
+import io.github.alersrt.plugins.dependent.domain.Dependent;
 
 public class DependencyMapperImpl implements DependencyMapper {
     @Override

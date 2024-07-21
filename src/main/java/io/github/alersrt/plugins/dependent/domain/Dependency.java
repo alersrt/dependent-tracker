@@ -1,14 +1,10 @@
-package org.student.plugins.dependent.domain;
+package io.github.alersrt.plugins.dependent.domain;
 
-import java.util.List;
-
-public class Dependent {
+public class Dependency {
 
     private String groupId;
     private String artifactId;
     private String version;
-
-    private List<Dependency> dependencies;
 
     public String getGroupId() {
         return groupId;
@@ -32,13 +28,5 @@ public class Dependent {
 
     public void setVersion(String version) {
         this.version = version;
-    }
-
-    public List<Dependency> getDependencies() {
-        return dependencies;
-    }
-
-    public void setDependencies(List<Dependency> dependencies) {
-        this.dependencies = dependencies;
     }
 }

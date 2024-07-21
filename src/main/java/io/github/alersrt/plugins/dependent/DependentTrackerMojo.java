@@ -1,12 +1,14 @@
-package org.student.plugins.dependent;
+package io.github.alersrt.plugins.dependent;
 
+import io.github.alersrt.plugins.dependent.domain.Dependent;
+import io.github.alersrt.plugins.dependent.mapper.DependencyMapper;
+import io.github.alersrt.plugins.dependent.mapper.DependencyMapperImpl;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -15,9 +17,6 @@ import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.transport.rest_client.RestClientTransport;
-import org.student.plugins.dependent.domain.Dependent;
-import org.student.plugins.dependent.mapper.DependencyMapper;
-import org.student.plugins.dependent.mapper.DependencyMapperImpl;
 
 import java.io.IOException;
 
