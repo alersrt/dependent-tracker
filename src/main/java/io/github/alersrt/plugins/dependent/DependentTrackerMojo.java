@@ -6,7 +6,10 @@ import io.github.alersrt.plugins.dependent.mapper.DependencyMapperImpl;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -19,29 +22,31 @@ import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.transport.rest_client.RestClientTransport;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import javax.net.ssl.SSLContext;
 
 @Mojo(name = "dependent-tracker")
 public class DependentTrackerMojo extends AbstractMojo {
 
-    @Parameter(defaultValue = "${project}", required = true, readonly = true)
-    MavenProject project;
-
-    @Parameter(property = "address", required = true, readonly = true)
-    String address;
-
-    @Parameter(property = "username", required = true, readonly = true)
-    String username;
-
-    @Parameter(property = "password", required = true, readonly = true)
-    String password;
-
-    @Parameter(property = "password", required = true, readonly = true)
-    String index;
-
     private final DependencyMapper mapper = new DependencyMapperImpl();
 
+    @Parameter(defaultValue = "${project}", required = true, readonly = false)
+    MavenProject project;
+    @Parameter(property = "address", required = true, readonly = false)
+    String address;
+    @Parameter(property = "username", required = true, readonly = false)
+    String username;
+    @Parameter(property = "password", required = true, readonly = false)
+    String password;
+    @Parameter(property = "password", required = true, readonly = false)
+    String index;
+    @Parameter(property = "skipSslVerification", required = false, readonly = false)
+    Boolean skipSslVerification = false;
+
     public void execute() throws MojoExecutionException {
-        final OpenSearchClient openSearchClient = buildOpenSearchClient(address, username, password);
+        final OpenSearchClient openSearchClient = buildOpenSearchClient(address, username, password, skipSslVerification);
 
         var dependent = mapper.toDependent(project.getModel());
         dependent.setDependencies(project.getModel().getDependencies().stream().map(mapper::toDependency).toList());
@@ -58,7 +63,10 @@ public class DependentTrackerMojo extends AbstractMojo {
         }
     }
 
-    private OpenSearchClient buildOpenSearchClient(String address, String username, String password) {
+    private OpenSearchClient buildOpenSearchClient(String address,
+                                                   String username,
+                                                   String password,
+                                                   Boolean skipSslVerification) {
         final HttpHost host = HttpHost.create(address);
         final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(
@@ -66,7 +74,26 @@ public class DependentTrackerMojo extends AbstractMojo {
                 new UsernamePasswordCredentials(username, password)
         );
         final RestClient restClient = RestClient.builder(host)
-                .setHttpClientConfigCallback(httpAsyncClientBuilder -> httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
+                .setHttpClientConfigCallback(httpAsyncClientBuilder -> {
+                    httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+
+                    if (skipSslVerification) {
+                        SSLContext sslContext = null;
+                        try {
+                            sslContext = SSLContextBuilder
+                                    .create()
+                                    .loadTrustMaterial(null, TrustAllStrategy.INSTANCE)
+                                    .build();
+                        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        httpAsyncClientBuilder.setSSLContext(sslContext);
+                        httpAsyncClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+                    }
+
+                    return httpAsyncClientBuilder;
+                })
                 .build();
 
         var transport = new RestClientTransport(
