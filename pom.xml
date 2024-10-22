@@ -11,7 +11,7 @@
 
     <groupId>io.github.alersrt</groupId>
     <artifactId>plugins.maven.dependent-tracker</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6</version>
     <packaging>maven-plugin</packaging>
 
     <name>Dependent tracker</name>
