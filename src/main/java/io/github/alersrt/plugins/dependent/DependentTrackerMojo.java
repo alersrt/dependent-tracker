@@ -34,14 +34,19 @@ public class DependentTrackerMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", required = true, readonly = false)
     MavenProject project;
+
     @Parameter(property = "address", required = true, readonly = false)
     String address;
+
     @Parameter(property = "username", required = true, readonly = false)
     String username;
+
     @Parameter(property = "password", required = true, readonly = false)
     String password;
-    @Parameter(property = "password", required = true, readonly = false)
+
+    @Parameter(property = "index", required = true, readonly = false)
     String index;
+
     @Parameter(property = "skipSslVerification", required = false, readonly = false)
     Boolean skipSslVerification = false;
 
