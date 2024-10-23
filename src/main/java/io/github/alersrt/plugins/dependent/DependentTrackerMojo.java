@@ -7,9 +7,8 @@ import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.nio.conn.NoopIOSessionStrategy;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -22,10 +21,6 @@ import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.transport.rest_client.RestClientTransport;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import javax.net.ssl.SSLContext;
 
 @Mojo(name = "dependent-tracker")
 public class DependentTrackerMojo extends AbstractMojo {
@@ -74,37 +69,19 @@ public class DependentTrackerMojo extends AbstractMojo {
                                                    Boolean skipSslVerification) {
         final HttpHost host = HttpHost.create(address);
         final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(
-                new AuthScope(host),
-                new UsernamePasswordCredentials(username, password)
-        );
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+
         final RestClient restClient = RestClient.builder(host)
                 .setHttpClientConfigCallback(httpAsyncClientBuilder -> {
                     httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-
                     if (skipSslVerification) {
-                        SSLContext sslContext = null;
-                        try {
-                            sslContext = SSLContextBuilder
-                                    .create()
-                                    .loadTrustMaterial(null, TrustAllStrategy.INSTANCE)
-                                    .build();
-                        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        httpAsyncClientBuilder.setSSLContext(sslContext);
-                        httpAsyncClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+                        httpAsyncClientBuilder.setSSLStrategy(new NoopIOSessionStrategy());
                     }
-
                     return httpAsyncClientBuilder;
                 })
                 .build();
 
-        var transport = new RestClientTransport(
-                restClient,
-                new JacksonJsonpMapper()
-        );
+        var transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
         return new OpenSearchClient(transport);
     }
 }
