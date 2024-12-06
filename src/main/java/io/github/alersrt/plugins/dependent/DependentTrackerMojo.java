@@ -7,8 +7,9 @@ import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.nio.conn.NoopIOSessionStrategy;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -21,6 +22,9 @@ import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.transport.rest_client.RestClientTransport;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 @Mojo(name = "dependent-tracker")
 public class DependentTrackerMojo extends AbstractMojo {
@@ -75,7 +79,14 @@ public class DependentTrackerMojo extends AbstractMojo {
                 .setHttpClientConfigCallback(httpAsyncClientBuilder -> {
                     httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
                     if (skipSslVerification) {
-                        httpAsyncClientBuilder.setSSLStrategy(new NoopIOSessionStrategy());
+                        final SSLContextBuilder sslContext = new SSLContextBuilder();
+                        try {
+                            sslContext.loadTrustMaterial(null, new TrustAllStrategy());
+                            httpAsyncClientBuilder.setSSLContext(sslContext.build());
+                            httpAsyncClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+                        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+                            throw new RuntimeException("Can't disable SSL verification", e);
+                        }
                     }
                     return httpAsyncClientBuilder;
                 })
