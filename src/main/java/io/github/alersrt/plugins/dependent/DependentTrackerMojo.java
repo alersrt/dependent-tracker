@@ -1,35 +1,26 @@
 package io.github.alersrt.plugins.dependent;
 
-import io.github.alersrt.plugins.dependent.domain.Dependent;
-import io.github.alersrt.plugins.dependent.mapper.DependencyMapper;
-import io.github.alersrt.plugins.dependent.mapper.DependencyMapperImpl;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.TrustAllStrategy;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.ssl.SSLContextBuilder;
+import io.github.alersrt.plugins.dependent.core.TrackerFacade;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.opensearch.client.RestClient;
-import org.opensearch.client.json.jackson.JacksonJsonpMapper;
-import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch.core.IndexRequest;
-import org.opensearch.client.transport.rest_client.RestClientTransport;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.env.PropertySource;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
+
+import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_APP_NAMESPACE;
+import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_ADDRESS;
+import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_INDEX;
+import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_PASSWORD;
+import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION;
+import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_USERNAME;
 
 @Mojo(name = "dependent-tracker")
 public class DependentTrackerMojo extends AbstractMojo {
-
-    private final DependencyMapper mapper = new DependencyMapperImpl();
 
     @Parameter(defaultValue = "${project}", required = true, readonly = false)
     MavenProject project;
@@ -49,50 +40,40 @@ public class DependentTrackerMojo extends AbstractMojo {
     @Parameter(property = "skipSslVerification", required = false, readonly = false)
     Boolean skipSslVerification = false;
 
+    @Parameter(property = "namespace", required = true, readonly = false)
+    String namespace;
+
     public void execute() throws MojoExecutionException {
-        final OpenSearchClient openSearchClient = buildOpenSearchClient(address, username, password, skipSslVerification);
-
-        var dependent = mapper.toDependent(project.getModel());
-        dependent.setDependencies(project.getModel().getDependencies().stream().map(mapper::toDependency).toList());
-
-        var indexRequest = new IndexRequest.Builder<Dependent>()
-                .index(index)
-                .document(dependent)
-                .build();
-
+        var ctx = new AnnotationConfigApplicationContext();
+        ctx.scan("io.github.alersrt.plugins.dependent");
+        ctx.getEnvironment().getPropertySources().addLast(new CustomPropertySource());
+        ctx.refresh();
+        TrackerFacade facade = ctx.getBean(TrackerFacade.class);
         try {
-            openSearchClient.index(indexRequest);
+            facade.track(project.getModel());
         } catch (IOException e) {
-            throw new MojoExecutionException(e);
+            throw new RuntimeException(e);
         }
     }
 
-    private OpenSearchClient buildOpenSearchClient(String address,
-                                                   String username,
-                                                   String password,
-                                                   Boolean skipSslVerification) {
-        final HttpHost host = HttpHost.create(address);
-        final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+    private class CustomPropertySource extends PropertySource<String> {
 
-        final RestClient restClient = RestClient.builder(host)
-                .setHttpClientConfigCallback(httpAsyncClientBuilder -> {
-                    httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-                    if (skipSslVerification) {
-                        final SSLContextBuilder sslContext = new SSLContextBuilder();
-                        try {
-                            sslContext.loadTrustMaterial(null, new TrustAllStrategy());
-                            httpAsyncClientBuilder.setSSLContext(sslContext.build());
-                            httpAsyncClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-                        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
-                            throw new RuntimeException("Can't disable SSL verification", e);
-                        }
-                    }
-                    return httpAsyncClientBuilder;
-                })
-                .build();
+        public CustomPropertySource() {
+            super("customPropertySource");
+        }
 
-        var transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
-        return new OpenSearchClient(transport);
+        @Override
+        public String getProperty(String name) {
+            return switch (name) {
+                case PROPERTY_OPENSEARCH_ADDRESS -> address;
+                case PROPERTY_OPENSEARCH_USERNAME -> username;
+                case PROPERTY_OPENSEARCH_PASSWORD -> password;
+                case PROPERTY_OPENSEARCH_INDEX -> index;
+                case PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION ->
+                        Optional.ofNullable(skipSslVerification).map(Object::toString).orElse(null);
+                case PROPERTY_APP_NAMESPACE -> namespace;
+                default -> null;
+            };
+        }
     }
 }
