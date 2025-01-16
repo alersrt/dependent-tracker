@@ -14,6 +14,7 @@ import org.opensearch.client.transport.rest_client.RestClientTransport;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -24,6 +25,7 @@ import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION;
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_USERNAME;
 
+@EnableElasticsearchRepositories(basePackages = {"io.github.alersrt.plugins.dependent.domain"})
 @Configuration
 public class RootConfig {
 
