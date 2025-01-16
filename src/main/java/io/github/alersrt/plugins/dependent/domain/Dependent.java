@@ -28,10 +28,7 @@ public class Dependent {
     private String namespace;
 
     @Field(type = FieldType.Date_Nanos)
-    private Instant createdAt;
-
-    @Field(type = FieldType.Date_Nanos)
-    private Instant updatedAt;
+    private Instant buitAt;
 
     @Field(type = FieldType.Object)
     private List<Dependency> dependencies;

@@ -7,10 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
+
 @Component
 public class DependencyMapperImpl implements DependencyMapper {
-
-    private String namespace;
 
     @Override
     public Dependency toDependency(org.apache.maven.model.Dependency dependency) {
@@ -28,8 +27,6 @@ public class DependencyMapperImpl implements DependencyMapper {
 
     @Override
     public Dependent toDependent(Model model, String namespace) {
-        var now = Instant.now();
-
         if (model == null) {
             return null;
         }
@@ -38,8 +35,7 @@ public class DependencyMapperImpl implements DependencyMapper {
         dep.setGroupId(model.getGroupId());
         dep.setArtifactId(model.getArtifactId());
         dep.setVersion(model.getVersion());
-        dep.setCreatedAt(now);
-        dep.setUpdatedAt(now);
+        dep.setBuitAt(Instant.now());
         dep.setNamespace(namespace);
         dep.setDependencies(model.getDependencies().stream().map(this::toDependency).toList());
 

@@ -8,10 +8,10 @@ import org.apache.maven.model.Model;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.time.Instant;
 
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_APP_NAMESPACE;
+
 
 @Component
 @RequiredArgsConstructor
@@ -23,13 +23,13 @@ public class TrackerFacade {
     @Value("${" + PROPERTY_APP_NAMESPACE + "}")
     private String namespace;
 
-    public void track(Model model) throws IOException {
+    public void track(Model model) {
 
         String id = Dependent.naturalId(model.getGroupId(), model.getArtifactId(), model.getVersion(), namespace);
 
         var entity = repository.findById(id)
                 .map(dependent -> {
-                    dependent.setUpdatedAt(Instant.now());
+                    dependent.setBuitAt(Instant.now());
                     return dependent;
                 })
                 .orElse(mapper.toDependent(model, namespace));

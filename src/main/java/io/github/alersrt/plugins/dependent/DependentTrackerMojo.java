@@ -9,7 +9,6 @@ import org.apache.maven.project.MavenProject;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.PropertySource;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_APP_NAMESPACE;
@@ -18,6 +17,7 @@ import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_PASSWORD;
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION;
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_USERNAME;
+
 
 @Mojo(name = "dependent-tracker")
 public class DependentTrackerMojo extends AbstractMojo {
@@ -49,11 +49,7 @@ public class DependentTrackerMojo extends AbstractMojo {
         ctx.getEnvironment().getPropertySources().addLast(new CustomPropertySource());
         ctx.refresh();
         TrackerFacade facade = ctx.getBean(TrackerFacade.class);
-        try {
-            facade.track(project.getModel());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        facade.track(project.getModel());
     }
 
     private class CustomPropertySource extends PropertySource<String> {
@@ -69,8 +65,8 @@ public class DependentTrackerMojo extends AbstractMojo {
                 case PROPERTY_OPENSEARCH_USERNAME -> username;
                 case PROPERTY_OPENSEARCH_PASSWORD -> password;
                 case PROPERTY_OPENSEARCH_INDEX -> index;
-                case PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION ->
-                        Optional.ofNullable(skipSslVerification).map(Object::toString).orElse(null);
+                case PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION -> Optional.ofNullable(skipSslVerification).map(Object::toString)
+                        .orElse(null);
                 case PROPERTY_APP_NAMESPACE -> namespace;
                 default -> null;
             };
