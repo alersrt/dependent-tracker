@@ -44,12 +44,13 @@ public class DependentTrackerMojo extends AbstractMojo {
     String namespace;
 
     public void execute() throws MojoExecutionException {
-        var ctx = new AnnotationConfigApplicationContext();
-        ctx.scan("io.github.alersrt.plugins.dependent");
-        ctx.getEnvironment().getPropertySources().addLast(new CustomPropertySource());
-        ctx.refresh();
-        TrackerFacade facade = ctx.getBean(TrackerFacade.class);
-        facade.track(project.getModel());
+        try (var ctx = new AnnotationConfigApplicationContext()) {
+            ctx.scan("io.github.alersrt.plugins.dependent");
+            ctx.getEnvironment().getPropertySources().addLast(new CustomPropertySource());
+            ctx.refresh();
+            TrackerFacade facade = ctx.getBean(TrackerFacade.class);
+            facade.track(project.getModel());
+        }
     }
 
     private class CustomPropertySource extends PropertySource<String> {
