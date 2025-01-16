@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>test-group</groupId>
+    <artifactId>test-artifact</artifactId>
+    <version>1.0.0</version>
+
+    <packaging>pom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-artifact</artifactId>
+            <version>2.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-project</artifactId>
+            <version>2.0.8</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.github.alersrt</groupId>
+                <artifactId>plugins.maven.dependent-tracker</artifactId>
+                <version>0.1.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>dependent-tracker</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <address>localhost</address>
+                    <username>admin</username>
+                    <password>password</password>
+                    <index>test-index</index>
+                    <skipSslVerification>true</skipSslVerification>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
