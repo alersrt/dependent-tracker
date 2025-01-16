@@ -27,17 +27,13 @@ import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY
 @Configuration
 public class RootConfig {
 
-    @Value("${" + PROPERTY_OPENSEARCH_ADDRESS + "}")
-    private String address;
-    @Value("${" + PROPERTY_OPENSEARCH_USERNAME + "}")
-    private String username;
-    @Value("${" + PROPERTY_OPENSEARCH_PASSWORD + "}")
-    private String password;
-    @Value("${" + PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION + "}")
-    private Boolean skipSslVerification;
-
     @Bean
-    public OpenSearchClient openSearchClient() {
+    public OpenSearchClient openSearchClient(
+            @Value("${" + PROPERTY_OPENSEARCH_ADDRESS + "}") String address,
+            @Value("${" + PROPERTY_OPENSEARCH_USERNAME + "}") String username,
+            @Value("${" + PROPERTY_OPENSEARCH_PASSWORD + "}") String password,
+            @Value("${" + PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION + "}") Boolean skipSslVerification
+    ) {
         final HttpHost host = HttpHost.create(address);
         final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
