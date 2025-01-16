@@ -1,8 +1,8 @@
 package io.github.alersrt.plugins.dependent;
 
 import io.github.alersrt.plugins.dependent.core.TrackerFacade;
+import org.apache.maven.api.di.Named;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -18,9 +18,9 @@ import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION;
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_USERNAME;
 
-
+@Named("io.github.alersrt:plugins.maven.dependent-tracker:1.0.0:dependent-tracker")
 @Mojo(name = "dependent-tracker")
-public class DependentTrackerMojo extends AbstractMojo {
+public class DependentTrackerMojo extends AbstractMojo implements org.apache.maven.api.plugin.Mojo {
 
     @Parameter(defaultValue = "${project}", required = true, readonly = false)
     MavenProject project;
@@ -43,7 +43,7 @@ public class DependentTrackerMojo extends AbstractMojo {
     @Parameter(property = "namespace", required = true, readonly = false)
     String namespace;
 
-    public void execute() throws MojoExecutionException {
+    public void execute() {
         try (var ctx = new AnnotationConfigApplicationContext()) {
             ctx.scan("io.github.alersrt.plugins.dependent");
             ctx.getEnvironment().getPropertySources().addLast(new CustomPropertySource());

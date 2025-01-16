@@ -11,8 +11,6 @@
     <goalPrefix>s..dependent-tracker</goalPrefix>
     <isolatedRealm>false</isolatedRealm>
     <inheritedByDefault>true</inheritedByDefault>
-    <requiredJavaVersion>17</requiredJavaVersion>
-    <requiredMavenVersion>4.0.0-beta-5</requiredMavenVersion>
     <mojos>
         <mojo>
             <goal>dependent-tracker</goal>
