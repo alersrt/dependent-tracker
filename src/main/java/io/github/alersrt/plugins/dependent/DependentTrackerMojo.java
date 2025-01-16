@@ -66,7 +66,8 @@ public class DependentTrackerMojo extends AbstractMojo {
                 case PROPERTY_OPENSEARCH_USERNAME -> username;
                 case PROPERTY_OPENSEARCH_PASSWORD -> password;
                 case PROPERTY_OPENSEARCH_INDEX -> index;
-                case PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION -> Optional.ofNullable(skipSslVerification).map(Object::toString)
+                case PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION -> Optional.ofNullable(skipSslVerification)
+                        .map(Object::toString)
                         .orElse(null);
                 case PROPERTY_APP_NAMESPACE -> namespace;
                 default -> null;
