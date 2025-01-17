@@ -1,5 +1,7 @@
 package io.github.alersrt.plugins.dependent.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.alersrt.plugins.dependent.domain.DependentRepository;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -59,7 +61,9 @@ public class RootConfig {
                 })
                 .build();
 
-        var transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
+        var transport = new RestClientTransport(restClient, new JacksonJsonpMapper(
+                new ObjectMapper().registerModule(new JavaTimeModule())
+        ));
         return new OpenSearchClient(transport);
     }
 
