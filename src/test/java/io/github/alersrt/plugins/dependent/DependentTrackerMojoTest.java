@@ -2,8 +2,8 @@ package io.github.alersrt.plugins.dependent;
 
 import io.github.alersrt.plugins.dependent.config.RootConfig;
 import io.github.alersrt.plugins.dependent.domain.Dependent;
+import org.apache.maven.api.plugin.Mojo;
 import org.apache.maven.api.plugin.testing.InjectMojo;
-import org.apache.maven.api.plugin.testing.MojoParameter;
 import org.apache.maven.api.plugin.testing.MojoTest;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.ComposeContainer;
@@ -22,12 +22,6 @@ class DependentTrackerMojoTest {
             .waitingFor("opensearch", Wait.forHealthcheck());
 
     @InjectMojo(goal = "dependent-tracker", pom = "file:src/test/resources/test-pom.xml")
-//    @MojoParameter(name = "address", value = "localhost:9200")
-//    @MojoParameter(name = "username", value = "admin")
-//    @MojoParameter(name = "password", value = "OpenSearch#0")
-//    @MojoParameter(name = "index", value = "test-index")
-//    @MojoParameter(name = "skipSslVerification", value = "true")
-//    @MojoParameter(name = "namespace", value = "test")
     @Test
     void execute(DependentTrackerMojo mojo) throws Exception {
         assertThat(mojo).isNotNull();

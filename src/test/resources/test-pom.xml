@@ -38,12 +38,11 @@
                     </execution>
                 </executions>
                 <configuration>
-<!--                    <project implementation="org.apache.maven.api.plugin.testing.stubs.ProjectStub"/>-->
                     <address>localhost:9200</address>
                     <username>admin</username>
                     <password>OpenSearch#0</password>
                     <index>test-index</index>
-                    <skipSslVerification>true</skipSslVerification>
+                Mojo    <skipSslVerification>true</skipSslVerification>
                     <namespace>test</namespace>
                 </configuration>
             </plugin>
