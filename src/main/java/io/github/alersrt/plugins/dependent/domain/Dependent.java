@@ -1,44 +1,43 @@
 package io.github.alersrt.plugins.dependent.domain;
 
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.WriteTypeHint;
+
+import java.time.Instant;
 import java.util.List;
 
+import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_INDEX;
+
+@Data
+@Document(indexName = "#{@environment.getProperty('" + PROPERTY_OPENSEARCH_INDEX + "')}", writeTypeHint = WriteTypeHint.FALSE)
 public class Dependent {
 
+    @Id
+    private String naturalId;
+
+    @Field
     private String groupId;
+
+    @Field
     private String artifactId;
+
+    @Field
     private String version;
 
+    @Field
+    private String namespace;
+
+    @Field(type = FieldType.Date_Nanos)
+    private Instant buitAt;
+
+    @Field(type = FieldType.Object)
     private List<Dependency> dependencies;
 
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    public String getArtifactId() {
-        return artifactId;
-    }
-
-    public void setArtifactId(String artifactId) {
-        this.artifactId = artifactId;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public List<Dependency> getDependencies() {
-        return dependencies;
-    }
-
-    public void setDependencies(List<Dependency> dependencies) {
-        this.dependencies = dependencies;
+    public static String naturalId(String groupId, String artifactId, String version, String namespace) {
+        return String.join(":", groupId, artifactId, version, namespace);
     }
 }

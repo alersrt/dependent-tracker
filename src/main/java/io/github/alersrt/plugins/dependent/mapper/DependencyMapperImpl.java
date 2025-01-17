@@ -1,10 +1,16 @@
 package io.github.alersrt.plugins.dependent.mapper;
 
-import org.apache.maven.model.Model;
 import io.github.alersrt.plugins.dependent.domain.Dependency;
 import io.github.alersrt.plugins.dependent.domain.Dependent;
+import org.apache.maven.model.Model;
+import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
+
+@Component
 public class DependencyMapperImpl implements DependencyMapper {
+
     @Override
     public Dependency toDependency(org.apache.maven.model.Dependency dependency) {
         if (dependency == null) {
@@ -20,7 +26,7 @@ public class DependencyMapperImpl implements DependencyMapper {
     }
 
     @Override
-    public Dependent toDependent(Model model) {
+    public Dependent toDependent(Model model, String namespace) {
         if (model == null) {
             return null;
         }
@@ -29,6 +35,9 @@ public class DependencyMapperImpl implements DependencyMapper {
         dep.setGroupId(model.getGroupId());
         dep.setArtifactId(model.getArtifactId());
         dep.setVersion(model.getVersion());
+        dep.setBuitAt(Instant.now());
+        dep.setNamespace(namespace);
+        dep.setDependencies(model.getDependencies().stream().map(this::toDependency).toList());
 
         return dep;
     }
