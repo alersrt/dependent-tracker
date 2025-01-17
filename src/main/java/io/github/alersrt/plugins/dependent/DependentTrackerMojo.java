@@ -22,7 +22,7 @@ import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY
 @Mojo(name = "dependent-tracker")
 public class DependentTrackerMojo extends AbstractMojo implements org.apache.maven.api.plugin.Mojo {
 
-    @Parameter(defaultValue = "${project}", required = true, readonly = false)
+    @Parameter(property = "project", defaultValue = "${project}", required = true, readonly = false)
     MavenProject project;
 
     @Parameter(property = "address", required = true, readonly = false)

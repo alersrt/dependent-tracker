@@ -22,12 +22,12 @@ class DependentTrackerMojoTest {
             .waitingFor("opensearch", Wait.forHealthcheck());
 
     @InjectMojo(goal = "dependent-tracker", pom = "file:src/test/resources/test-pom.xml")
-    @MojoParameter(name = "address", value = "localhost:9200")
-    @MojoParameter(name = "username", value = "admin")
-    @MojoParameter(name = "password", value = "OpenSearch#0")
-    @MojoParameter(name = "index", value = "test-index")
-    @MojoParameter(name = "skipSslVerification", value = "true")
-    @MojoParameter(name = "namespace", value = "test")
+//    @MojoParameter(name = "address", value = "localhost:9200")
+//    @MojoParameter(name = "username", value = "admin")
+//    @MojoParameter(name = "password", value = "OpenSearch#0")
+//    @MojoParameter(name = "index", value = "test-index")
+//    @MojoParameter(name = "skipSslVerification", value = "true")
+//    @MojoParameter(name = "namespace", value = "test")
     @Test
     void execute(DependentTrackerMojo mojo) throws Exception {
         assertThat(mojo).isNotNull();

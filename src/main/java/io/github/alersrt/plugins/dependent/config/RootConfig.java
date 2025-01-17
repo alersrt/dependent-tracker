@@ -14,8 +14,6 @@ import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.rest_client.RestClientTransport;
 import org.opensearch.data.client.osc.OpenSearchTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
@@ -30,7 +28,6 @@ import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_USERNAME;
 
 @EnableElasticsearchRepositories(basePackageClasses = DependentRepository.class)
-@EnableAutoConfiguration(exclude = {ElasticsearchDataAutoConfiguration.class})
 @Configuration
 public class RootConfig {
 
