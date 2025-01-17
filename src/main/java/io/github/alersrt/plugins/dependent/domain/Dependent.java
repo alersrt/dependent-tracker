@@ -12,7 +12,7 @@ import java.util.List;
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_INDEX;
 
 @Data
-@Document(indexName = "${" + PROPERTY_OPENSEARCH_INDEX + "}")
+@Document(indexName = "#{@environment.getProperty('" + PROPERTY_OPENSEARCH_INDEX + "')}")
 public class Dependent {
 
     @Id
