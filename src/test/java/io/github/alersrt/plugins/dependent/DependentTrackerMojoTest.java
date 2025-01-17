@@ -24,7 +24,7 @@ class DependentTrackerMojoTest {
     @InjectMojo(goal = "dependent-tracker")
     @MojoParameter(name = "address", value = "localhost:9200")
     @MojoParameter(name = "username", value = "admin")
-    @MojoParameter(name = "password", value = "password")
+    @MojoParameter(name = "password", value = "OpenSearch#0")
     @MojoParameter(name = "index", value = "test-index")
     @MojoParameter(name = "skipSslVerification", value = "true")
     @MojoParameter(name = "namespace", value = "test")
@@ -33,7 +33,7 @@ class DependentTrackerMojoTest {
         assertThat(mojo).isNotNull();
 
         /*------ Arranges ------*/
-        var opensearchClient = new RootConfig().openSearchClient("localhost:9200", "admin", "password", true);
+        var opensearchClient = new RootConfig().openSearchClient("localhost:9200", "admin", "OpenSearch#0", true);
 
         /*------ Actions ------*/
         mojo.execute();

@@ -11,7 +11,7 @@ services:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - OPENSEARCH_JAVA_OPTS=-Xms128m -Xmx512m
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=password
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=OpenSearch#0
       - plugins.security.ssl.http.enabled=false
     volumes:
       - opensearch-volume:/usr/share/opensearch/data
@@ -19,7 +19,7 @@ services:
       - "9200:9200"
       - "9600:9600"
     healthcheck:
-      test: curl -k -s --fail -u admin:password http://localhost:9200/_cluster/health || exit 1
+      test: curl -k -s --fail -u admin:OpenSearch#0 http://localhost:9200/_cluster/health || exit 1
       interval: 5s
       timeout: 3s
       retries: 5
