@@ -42,7 +42,7 @@
                     <username>admin</username>
                     <password>OpenSearch#0</password>
                     <index>test-index</index>
-                Mojo    <skipSslVerification>true</skipSslVerification>
+                    <skipSslVerification>true</skipSslVerification>
                     <namespace>test</namespace>
                 </configuration>
             </plugin>
