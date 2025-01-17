@@ -12,7 +12,7 @@ Takes dependency list and send it to OpenSearch using the project's definition a
 <plugin>
     <groupId>io.github.alersrt</groupId>
     <artifactId>plugins.maven.dependent-tracker</artifactId>
-    <version>0.1.4</version>
+    <version>1.0.0</version>
     <executions>
         <execution>
             <goals>
@@ -25,6 +25,8 @@ Takes dependency list and send it to OpenSearch using the project's definition a
         <username>username</username>
         <password>password</password>
         <index>dependencies</index>
+        <namespace>test</namespace>
+        <skipSslVerification>true</skipSslVerification>
     </configuration>
 </plugin>
 ```
