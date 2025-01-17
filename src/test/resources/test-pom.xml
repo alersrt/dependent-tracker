@@ -38,6 +38,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <project>${project}</project>
                     <address>localhost:9200</address>
                     <username>admin</username>
                     <password>OpenSearch#0</password>
