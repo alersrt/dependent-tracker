@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.WriteTypeHint;
 
 import java.time.Instant;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_INDEX;
 
 @Data
-@Document(indexName = "#{@environment.getProperty('" + PROPERTY_OPENSEARCH_INDEX + "')}")
+@Document(indexName = "#{@environment.getProperty('" + PROPERTY_OPENSEARCH_INDEX + "')}", writeTypeHint = WriteTypeHint.FALSE)
 public class Dependent {
 
     @Id
