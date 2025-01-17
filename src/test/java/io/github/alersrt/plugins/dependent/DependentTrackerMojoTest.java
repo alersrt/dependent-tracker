@@ -21,7 +21,7 @@ class DependentTrackerMojoTest {
     private static final ComposeContainer ENVIRONMENT = new ComposeContainer(DockerComposeFinder.findCompose().toFile())
             .waitingFor("opensearch", Wait.forHealthcheck());
 
-    @InjectMojo(goal = "dependent-tracker")
+    @InjectMojo(goal = "dependent-tracker", pom = "file:src/test/resources/test-pom.xml")
     @MojoParameter(name = "address", value = "localhost:9200")
     @MojoParameter(name = "username", value = "admin")
     @MojoParameter(name = "password", value = "OpenSearch#0")
