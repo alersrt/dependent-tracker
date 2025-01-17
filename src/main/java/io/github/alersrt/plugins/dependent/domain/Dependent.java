@@ -15,6 +15,9 @@ import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY
 @Document(indexName = PROPERTY_OPENSEARCH_INDEX)
 public class Dependent {
 
+    @Id
+    private String naturalId;
+
     @Field
     private String groupId;
 
@@ -35,10 +38,5 @@ public class Dependent {
 
     public static String naturalId(String groupId, String artifactId, String version, String namespace) {
         return String.join(":", groupId, artifactId, version, namespace);
-    }
-
-    @Id
-    public String getNaturalId() {
-        return naturalId(this.groupId, this.artifactId, this.version, this.namespace);
     }
 }
