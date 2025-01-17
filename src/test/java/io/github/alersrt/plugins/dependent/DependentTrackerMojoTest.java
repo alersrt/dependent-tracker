@@ -36,5 +36,6 @@ class DependentTrackerMojoTest {
         /*------ Asserts ------*/
         assertThat(result).isNotNull();
         assertThat(result.hits().hits().size()).isEqualTo(1);
+        assertThat(result.hits().hits().get(0).source().getNaturalId()).isEqualTo("unknown:empty-project:0:test");
     }
 }

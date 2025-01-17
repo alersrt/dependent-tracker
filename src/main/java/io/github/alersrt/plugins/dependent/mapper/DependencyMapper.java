@@ -1,8 +1,8 @@
 package io.github.alersrt.plugins.dependent.mapper;
 
+import io.github.alersrt.plugins.dependent.domain.Dependent;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import io.github.alersrt.plugins.dependent.domain.Dependent;
 
 
 public interface DependencyMapper {
