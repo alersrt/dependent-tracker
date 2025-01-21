@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_APP_NAMESPACE;
 
@@ -22,6 +26,28 @@ public class TrackerFacade {
 
     @Value("${" + PROPERTY_APP_NAMESPACE + "}")
     private String namespace;
+
+    public void track(Collection<Model> models) {
+        List<String> ids = models
+                .stream()
+                .map(model -> Dependent.naturalId(model.getGroupId(), model.getArtifactId(), model.getVersion(), namespace))
+                .toList();
+
+        Map<String, Dependent> entities = new HashMap<>();
+        for (var entity : repository.findAllById(ids)) {
+            entity.setBuitAt(Instant.now());
+            entities.put(entity.getNaturalId(), entity);
+        }
+
+        for (var model : models) {
+            final String id = Dependent.naturalId(model.getGroupId(), model.getArtifactId(), model.getVersion(), namespace);
+            if (!entities.containsKey(id)) {
+                entities.put(id, mapper.toDependent(model, namespace));
+            }
+        }
+
+        repository.saveAll(entities.values());
+    }
 
     public void track(Model model) {
 

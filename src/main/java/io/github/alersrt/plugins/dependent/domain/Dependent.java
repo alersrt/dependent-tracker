@@ -34,7 +34,7 @@ public class Dependent {
     @Field(type = FieldType.Date_Nanos)
     private Instant buitAt;
 
-    @Field(type = FieldType.Object)
+    @Field(type = FieldType.Nested)
     private List<Dependency> dependencies;
 
     public static String naturalId(String groupId, String artifactId, String version, String namespace) {

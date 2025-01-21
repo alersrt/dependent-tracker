@@ -18,7 +18,7 @@ import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_SKIP_SSL_VERIFICATION;
 import static io.github.alersrt.plugins.dependent.utils.CommonConstants.PROPERTY_OPENSEARCH_USERNAME;
 
-@Named("io.github.alersrt:plugins.maven.dependent-tracker:1.0.1:dependent-tracker")
+@Named("io.github.alersrt:plugins.maven.dependent-tracker:1.0.2:dependent-tracker")
 @Mojo(name = "dependent-tracker")
 public class DependentTrackerMojo extends AbstractMojo implements org.apache.maven.api.plugin.Mojo {
 
