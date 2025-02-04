@@ -32,7 +32,7 @@ public class Dependent {
     private String namespace;
 
     @Field(type = FieldType.Date_Nanos)
-    private Instant buitAt;
+    private Instant builtAt;
 
     @Field(type = FieldType.Nested)
     private List<Dependency> dependencies;

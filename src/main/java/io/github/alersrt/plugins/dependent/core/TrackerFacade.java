@@ -35,7 +35,7 @@ public class TrackerFacade {
 
         Map<String, Dependent> entities = new HashMap<>();
         for (var entity : repository.findAllById(ids)) {
-            entity.setBuitAt(Instant.now());
+            entity.setBuiltAt(Instant.now());
             entities.put(entity.getNaturalId(), entity);
         }
 
@@ -55,7 +55,7 @@ public class TrackerFacade {
 
         var entity = repository.findById(id)
                 .map(dependent -> {
-                    dependent.setBuitAt(Instant.now());
+                    dependent.setBuiltAt(Instant.now());
                     return dependent;
                 })
                 .orElse(mapper.toDependent(model, namespace));

@@ -35,7 +35,7 @@ public class DependencyMapperImpl implements DependencyMapper {
         dep.setGroupId(model.getGroupId());
         dep.setArtifactId(model.getArtifactId());
         dep.setVersion(model.getVersion());
-        dep.setBuitAt(Instant.now());
+        dep.setBuiltAt(Instant.now());
         dep.setNamespace(namespace);
         dep.setDependencies(model.getDependencies().stream().map(this::toDependency).toList());
         dep.setNaturalId(Dependent.naturalId(dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), namespace));
